@@ -1,6 +1,11 @@
 import csv
 from pyllist import dllist
 
+
+if 1 % 2:
+	print("YASS")
+
+
 def csv_to_tiles(src):
 	with open(src) as file:
 		csv_reader = csv.reader(file, delimiter=",")
@@ -54,3 +59,6 @@ tiles[2]['players_on_tile'].append('player1')
 print(tiles[2])
 
 print(tiles[2].index)
+
+
+print(5%2)

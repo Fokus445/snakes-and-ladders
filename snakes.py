@@ -3,6 +3,7 @@ import csv
 import pygame
 import sys
 import random
+import time
 
 class Settings:
 	"""A class to store all settings for Snakes and Ladders"""
@@ -17,6 +18,8 @@ class Settings:
 		#Dice settings
 		self.dice_rolling_time = 3
 
+		self.start_cordinates = [500,0]
+
 	
 
 def csv_to_tiles(src):
@@ -29,7 +32,7 @@ def csv_to_tiles(src):
 
 		tiles = dllist()
 		for row in csv_reader:
-			if line_count % 2 or line_count==0:
+			if line_count % 2:
 				row = reversed(row)
 			for i in row:
 				tiles.appendleft({
@@ -44,32 +47,39 @@ def csv_to_tiles(src):
 				line_count=line_count+1
 				column_count=0
 
-		tile_count=0
+		
 		line_count=0
 
-		for tile in tiles:
-			if line_count % 2 or line_count==0:
+		for tile in reversed(tiles):
+			if line_count % 2 == 0:
 				tile['cordinates'] = [40+column_count*45,40+line_count*45]
+				column_count=column_count+1
 			else:
-				tile['cordinates'] = [40+(10-column_count)*45,40+line_count*45]
-			
-			column_count=column_count+1
-			tile['position'] = len(tiles)-tile_count
-			
+				tile['cordinates'] = [40+(9-column_count)*45,40+line_count*45]
+				column_count=column_count+1
+
 			if column_count==10:
 				line_count=line_count+1
 				column_count=0
-
-			tile_count=tile_count+1
 	
 
-		return tiles
+	return tiles
 
 
 BLACK = ( 0, 0, 0)
 WHITE = ( 255, 255, 255)
 GREEN = ( 0, 255, 0)
 RED = ( 255, 0, 0)
+
+
+class Player:
+	def __init__(self):
+		self.settings = Settings
+		self.cordinates = self.settings.start_cordinates
+
+
+
+
 
 class SnakesAndLadders:
 	"""Overall class to manage game assets and behavior"""
@@ -81,49 +91,66 @@ class SnakesAndLadders:
 			self.settings.screen_height))
 
 		self.tiles = csv_to_tiles("struktura.csv")
-		self.font = pygame.font.SysFont('Arial', 25)
+		self.font = pygame.font.SysFont('Arial', 15)
+		self._add_snakes_and_ladders()
+
+
 
 
 	def run_game(self):
 		"""Start the main loop for the game"""
 		while True:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					sys.exit()
-		
+			self._check_events()
+
 			self.screen.fill((255, 255, 255))
-			
 
 
-			TILE_COLOR = (233,233,233)
+			self._draw_tiles()
 
-
-			
-
-			for tile in self.tiles:
-
-				if tile['on_step_move_to'] != 0:
-					if tile['on_step_move_to']>tile['position']:
-						TILE_COLOR = (0,204,0)
-					elif tile['on_step_move_to']<tile['position']:
-						TILE_COLOR = (204,0,0)
-
-
-				pygame.draw.rect(self.screen, TILE_COLOR, 
-					(tile['cordinates'][0],tile['cordinates'][1], 40,40))
-
-				self.screen.blit(self.font.render(str(tile['position']), True, (50,50,50)), (tile['cordinates'][0],tile['cordinates'][1]))
+			self._draw_players()
 
 			pygame.display.flip()
 
 
 
-	def add_snakes_and_ladders(self):
+	def _add_snakes_and_ladders(self):
 		for i in range(1,int(len(self.tiles)/6)):
 			self.tiles[random.randint(3,len(self.tiles)-5)]['on_step_move_to'] = random.randint(3,len(self.tiles)-2)
+
+	def _draw_tiles(self):
+		for tile in self.tiles:
+			TILE_COLOR = (233,233,233)
+			if tile['on_step_move_to'] != 0:
+				if tile['on_step_move_to']>tile['position']:
+					TILE_COLOR = (0,204,0)
+				elif tile['on_step_move_to']<tile['position']:
+					TILE_COLOR = (204,0,0)
+			pygame.draw.rect(self.screen, TILE_COLOR, 
+					(tile['cordinates'][0],tile['cordinates'][1], 40,40))
+
+			self.screen.blit(self.font.render(str(tile['position']), True, (120,120,120)), (tile['cordinates'][0],tile['cordinates'][1]))
+			if tile['on_step_move_to'] != 0:
+				self.screen.blit(self.font.render(f"->{str(tile['on_step_move_to'])}", True, (0,0,0)), (tile['cordinates'][0]+10,tile['cordinates'][1]+20))
+
+	def _draw_players(self):
+		pygame.draw.circle(self.screen, BLACK, (20,450), 5)
+		pygame.draw.circle(self.screen, RED, (20,470), 5)
+		pygame.draw.circle(self.screen, GREEN, (20,490), 5)
+
+	def _update_players(self):
+		pass
+
+	def _check_event(self):
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit()
+
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				mouse_pos = pygame.mouse.get_pos()
+				self._check_play_button(mouse_pos)
+
 
 if __name__ == '__main__':
 	# Make a game instance, and run the game.
 	sal = SnakesAndLadders()
-	sal.add_snakes_and_ladders()
 	sal.run_game()
