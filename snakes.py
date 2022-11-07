@@ -4,6 +4,7 @@ import pygame
 import sys
 import random
 import time
+from button import Button
 
 class Settings:
 	"""A class to store all settings for Snakes and Ladders"""
@@ -94,6 +95,32 @@ class SnakesAndLadders:
 		self.font = pygame.font.SysFont('Arial', 15)
 		self._add_snakes_and_ladders()
 
+		# Make the Play button.
+		self.play_button = Button(self, "Play")
+		self.dice_button = Button(self, "Roll the Dice",dice=True)
+
+		self.game_active = False
+
+		self.rolling_dice = False
+		self.number_rolled = 0
+
+		self.number_of_players = int(input("Enter number of players: "))
+
+		if self.number_of_players==2:
+			self.player1_position = 0
+			self.player2_position = 0
+			self.player_turn = random.randint(1,2)	
+		else:
+			self.player1_position = 0
+			self.player2_position = 0
+			self.player3_position = 0
+			self.player_turn = random.randint(1,3)
+
+		self.game_won = False
+		if self.game_won:
+			self.number_rolled = 0
+
+
 
 
 
@@ -103,11 +130,26 @@ class SnakesAndLadders:
 			self._check_events()
 
 			self.screen.fill((255, 255, 255))
+			
+			if not self.game_active:
+				self.play_button.draw_button()
 
 
-			self._draw_tiles()
+			if self.game_active:
 
-			self._draw_players()
+				self.screen.fill((255, 255, 255))
+				if self.player_turn == 1:
+					pygame.draw.circle(self.screen, RED , (800,230),50)
+				if self.player_turn == 2:
+					pygame.draw.circle(self.screen, GREEN, (800,230), 50)
+				if self.player_turn == 3:
+					pygame.draw.circle(self.screen, BLACK , (800,230), 50)
+				self.dice_button.draw_button()
+
+				self._draw_tiles()
+
+
+				self._update_players()
 
 			pygame.display.flip()
 
@@ -132,15 +174,69 @@ class SnakesAndLadders:
 			if tile['on_step_move_to'] != 0:
 				self.screen.blit(self.font.render(f"->{str(tile['on_step_move_to'])}", True, (0,0,0)), (tile['cordinates'][0]+10,tile['cordinates'][1]+20))
 
-	def _draw_players(self):
-		pygame.draw.circle(self.screen, BLACK, (20,450), 5)
-		pygame.draw.circle(self.screen, RED, (20,470), 5)
-		pygame.draw.circle(self.screen, GREEN, (20,490), 5)
 
 	def _update_players(self):
-		pass
+		if self.number_of_players == 2:
+			if self.player1_position == 0:
+				pygame.draw.circle(self.screen, RED, (self.tiles[self.player1_position]['cordinates'][0]-30,self.tiles[self.player1_position]['cordinates'][1]+20), 5)
+			else:
+				pygame.draw.circle(self.screen, RED, (self.tiles[self.player1_position]['cordinates'][0]+20,self.tiles[self.player1_position]['cordinates'][1]+20), 5)
+			if self.player2_position == 0:
+				pygame.draw.circle(self.screen, GREEN, (self.tiles[self.player2_position]['cordinates'][0]-30,self.tiles[self.player2_position]['cordinates'][1]+10), 5)
+			else:
+				pygame.draw.circle(self.screen, GREEN, (self.tiles[self.player2_position]['cordinates'][0]+20,self.tiles[self.player2_position]['cordinates'][1]+10), 5)
+		
+		if self.number_of_players ==3:
+			if self.player1_position == 0:
+				pygame.draw.circle(self.screen, RED, (self.tiles[self.player1_position]['cordinates'][0]-30,self.tiles[self.player1_position]['cordinates'][1]+20), 5)
+			else:
+				pygame.draw.circle(self.screen, RED, (self.tiles[self.player1_position]['cordinates'][0]+20,self.tiles[self.player1_position]['cordinates'][1]+20), 5)
+			if self.player2_position == 0:
+				pygame.draw.circle(self.screen, GREEN, (self.tiles[self.player2_position]['cordinates'][0]-30,self.tiles[self.player2_position]['cordinates'][1]+10), 5)
+			else:
+				pygame.draw.circle(self.screen, GREEN, (self.tiles[self.player2_position]['cordinates'][0]+20,self.tiles[self.player2_position]['cordinates'][1]+10), 5)
+			if self.player3_position == 0:
+				pygame.draw.circle(self.screen, BLACK, (self.tiles[self.player3_position]['cordinates'][0]-30,self.tiles[self.player3_position]['cordinates'][1]+30), 5)
+			else:
+				pygame.draw.circle(self.screen, BLACK, (self.tiles[self.player3_position]['cordinates'][0]+20,self.tiles[self.player3_position]['cordinates'][1]+30), 5)
 
-	def _check_event(self):
+		if self.rolling_dice==True:
+			if self.number_rolled!=0:
+				if self.player_turn == 1:
+					self.player1_position=self.player1_position+self.number_rolled
+					if self.player1_position >= len(self.tiles):
+						self.player1_positon = len(self.tiles)-1
+						print("RED WON! GAME STOPS")
+						self.game_won = True
+						
+					elif self.tiles[self.player1_position]['on_step_move_to'] != 0:
+						print(f"MOVING RED TO {self.tiles[self.player1_position]['on_step_move_to']}")
+						self.player1_position = self.tiles[self.player1_position]['on_step_move_to']-1
+				elif self.player_turn == 2:
+					self.player2_position=self.player2_position+self.number_rolled
+					if self.player1_position >= len(self.tiles):
+						self.player2_positon = len(self.tiles)-1
+						print("GREEN WON! GAME STOPS")
+						self.game_won = True
+					elif self.tiles[self.player2_position]['on_step_move_to'] != 0:
+						print(f"MOVING GREEN TO {self.tiles[self.player2_position]['on_step_move_to']}")
+						self.player2_position = self.tiles[self.player2_position]['on_step_move_to']-1
+				elif self.player_turn == 3:
+					self.player3_position=self.player3_position+self.number_rolled
+					if self.player3_position >= len(self.tiles):
+						self.player3_positon = len(self.tiles)-1
+						print("BLACK WON! GAME STOPS")
+						self.game_won = True
+					elif self.tiles[self.player3_position]['on_step_move_to'] != 0: 
+						print(f"MOVING BLACK TO {self.tiles[self.player3_position]['on_step_move_to']}")
+						self.player3_position = self.tiles[self.player3_position]['on_step_move_to']-1
+
+				self.player_turn=self.player_turn+1
+				if self.player_turn>self.number_of_players:
+					self.player_turn=1
+				self.rolling_dice=False
+
+	def _check_events(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
@@ -148,7 +244,24 @@ class SnakesAndLadders:
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				mouse_pos = pygame.mouse.get_pos()
 				self._check_play_button(mouse_pos)
+				if self.game_won == False:
+					self._check_dice_button(mouse_pos)
 
+	def _check_play_button(self, mouse_pos):
+		button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+		if button_clicked and not self.game_active:
+			self.game_active = True
+
+	def _check_dice_button(self, mouse_pos):
+		button_clicked = self.dice_button.rect.collidepoint(mouse_pos)
+		if button_clicked:
+			print("ROLLING THE DICE")
+			self._roll_the_dice()
+
+	def _roll_the_dice(self):
+		self.rolling_dice = True
+		self.number_rolled = random.randint(1,6)
+		print(self.number_rolled)
 
 if __name__ == '__main__':
 	# Make a game instance, and run the game.
