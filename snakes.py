@@ -21,50 +21,77 @@ class Settings:
 
 		self.start_cordinates = [500,0]
 
-	
 
-def csv_to_tiles(src):
-	with open(src) as file:
-		csv_reader = csv.reader(file, delimiter=",")
-		line_count = 0
-		column_count = 0
-
+class Tiles:
+	def __init__(self):
+		self.tiles = dllist()
+		self._csv_to_tiles()
+		self._order_tiles()
 
 
-		tiles = dllist()
-		for row in csv_reader:
-			if line_count % 2:
-				row = reversed(row)
-			for i in row:
-				tiles.appendleft({
-					"position":int(i),
-					"players_on_tile":[],
-					"on_step_move_to":0,
-					"cordinates":[],
-				})
-				column_count=column_count+1
-			
-			if column_count==10:
-				line_count=line_count+1
-				column_count=0
+	def _csv_to_tiles(self):
+		with open("struktura.csv") as file:
+			csv_reader = csv.reader(file, delimiter=",")
+			line_count = 0
+			column_count = 0
 
-		
-		line_count=0
+			tiles = dllist()
+			for row in csv_reader:
+				if line_count % 2:
+					row = reversed(row)
+				for i in row:
+					tiles.appendleft({
+						"position":int(i),
+						"players_on_tile":[],
+						"on_step_move_to":0,
+						"cordinates":[],
+					})
+					column_count=column_count+1
+				
+				if column_count==10:
+					line_count=line_count+1
+					column_count=0
 
-		for tile in reversed(tiles):
-			if line_count % 2 == 0:
-				tile['cordinates'] = [40+column_count*45,40+line_count*45]
-				column_count=column_count+1
-			else:
-				tile['cordinates'] = [40+(9-column_count)*45,40+line_count*45]
-				column_count=column_count+1
+			self.tiles = tiles
 
-			if column_count==10:
-				line_count=line_count+1
-				column_count=0
-	
+	def _order_tiles(self):
+			line_count=0
+			column_count=0
 
-	return tiles
+			for tile in reversed(self.tiles):
+				if line_count % 2 == 0:
+					tile['cordinates'] = [40+column_count*45,40+line_count*45]
+					column_count=column_count+1
+				else:
+					tile['cordinates'] = [40+(9-column_count)*45,40+line_count*45]
+					column_count=column_count+1
+
+				if column_count==10:
+					line_count=line_count+1
+					column_count=0
+
+	def _add_tile(self, pos):
+		self.tiles.insert({
+			"position":pos+1,
+			"players_on_tile":[],
+			"on_step_move_to":0,
+			"cordinates":[],
+		},self.tiles.nodeat(pos))
+
+	def _delete_tile(self,pos):
+		self.tiles.remove(self.tiles.nodeat(int(pos)))
+
+	def _clear_tiles(self):
+		while self.tiles:
+			self.tiles.pop()
+
+	def _add_snakes_and_ladders(self, pos1, pos2, rand=False):
+		if rand==False:
+			self.tiles[pos1+1]['on_step_move_to'] = self.tiles[pos2+1]['position']
+		else:
+			for i in range(1,int(len(self.tiles)/6)):
+				self.tiles[random.randint(3,len(self.tiles)-5)]['on_step_move_to'] = random.randint(3,len(self.tiles)-2)
+
 
 
 BLACK = ( 0, 0, 0)
@@ -73,38 +100,34 @@ GREEN = ( 0, 255, 0)
 RED = ( 255, 0, 0)
 
 
-class Player:
-	def __init__(self):
-		self.settings = Settings
-		self.cordinates = self.settings.start_cordinates
-
-
-
-
 
 class SnakesAndLadders:
 	"""Overall class to manage game assets and behavior"""
 	def __init__(self):
 		""" Initialize the game board and set its starting point."""
+		self.tileClass = Tiles()
 		pygame.init()
+
+
+
+		self.tiles = self.tileClass.tiles
+
+
+		self.number_of_players = int(input("Enter number of players: "))
+
+
 		self.settings = Settings()
 		self.screen = pygame.display.set_mode((self.settings.screen_width, 
 			self.settings.screen_height))
 
-		self.tiles = csv_to_tiles("struktura.csv")
 		self.font = pygame.font.SysFont('Arial', 15)
-		self._add_snakes_and_ladders()
 
 		# Make the Play button.
 		self.play_button = Button(self, "Play")
 		self.dice_button = Button(self, "Roll the Dice",dice=True)
 
-		self.game_active = False
-
 		self.rolling_dice = False
 		self.number_rolled = 0
-
-		self.number_of_players = int(input("Enter number of players: "))
 
 		if self.number_of_players==2:
 			self.player1_position = 0
@@ -116,11 +139,10 @@ class SnakesAndLadders:
 			self.player3_position = 0
 			self.player_turn = random.randint(1,3)
 
+		self.game_active = False
 		self.game_won = False
-		if self.game_won:
-			self.number_rolled = 0
 
-
+		
 
 
 
@@ -133,11 +155,34 @@ class SnakesAndLadders:
 			
 			if not self.game_active:
 				self.play_button.draw_button()
+				print("--------TILE MENU---------")
+				print("1. ADD NEW TILE ")
+				print("2. DELETE TILE AT POSTION X ")
+				print("3. DELETE ALL TILES ")
+				print("4. CONTINUE")
+
+				
+				choice = input("ENTER CHOICE: ")
+				if choice == '1':
+					pos = int(input("Where to insert tile (position): "))
+					self.tileClass_add_tile(pos)
+					self.tileClass_order_tiles()
+				elif choice == '2':
+					pos = int(input("Where to DELETE tile (position): "))
+					self.tileClass_delete_tile(pos-1)
+					self.tileClass_order_tiles()
+				elif choice == '3':
+					self.tileClass_clear_tiles()
+				else:
+					pass
+				self._draw_tiles()
+
 
 
 			if self.game_active:
 
 				self.screen.fill((255, 255, 255))
+
 				if self.player_turn == 1:
 					pygame.draw.circle(self.screen, RED , (800,230),50)
 				if self.player_turn == 2:
@@ -154,10 +199,6 @@ class SnakesAndLadders:
 			pygame.display.flip()
 
 
-
-	def _add_snakes_and_ladders(self):
-		for i in range(1,int(len(self.tiles)/6)):
-			self.tiles[random.randint(3,len(self.tiles)-5)]['on_step_move_to'] = random.randint(3,len(self.tiles)-2)
 
 	def _draw_tiles(self):
 		for tile in self.tiles:
@@ -202,16 +243,17 @@ class SnakesAndLadders:
 
 		if self.rolling_dice==True:
 			if self.number_rolled!=0:
+
 				if self.player_turn == 1:
 					self.player1_position=self.player1_position+self.number_rolled
 					if self.player1_position >= len(self.tiles):
 						self.player1_positon = len(self.tiles)-1
 						print("RED WON! GAME STOPS")
 						self.game_won = True
-						
 					elif self.tiles[self.player1_position]['on_step_move_to'] != 0:
 						print(f"MOVING RED TO {self.tiles[self.player1_position]['on_step_move_to']}")
 						self.player1_position = self.tiles[self.player1_position]['on_step_move_to']-1
+
 				elif self.player_turn == 2:
 					self.player2_position=self.player2_position+self.number_rolled
 					if self.player1_position >= len(self.tiles):
@@ -222,6 +264,7 @@ class SnakesAndLadders:
 						print(f"MOVING GREEN TO {self.tiles[self.player2_position]['on_step_move_to']}")
 						self.player2_position = self.tiles[self.player2_position]['on_step_move_to']-1
 				elif self.player_turn == 3:
+
 					self.player3_position=self.player3_position+self.number_rolled
 					if self.player3_position >= len(self.tiles):
 						self.player3_positon = len(self.tiles)-1
@@ -255,13 +298,20 @@ class SnakesAndLadders:
 	def _check_dice_button(self, mouse_pos):
 		button_clicked = self.dice_button.rect.collidepoint(mouse_pos)
 		if button_clicked:
-			print("ROLLING THE DICE")
 			self._roll_the_dice()
 
 	def _roll_the_dice(self):
 		self.rolling_dice = True
 		self.number_rolled = random.randint(1,6)
-		print(self.number_rolled)
+		print(f"Number rolled: {self.number_rolled}")
+
+	def _delete_tile(self,pos):
+		self.tiles.remove(self.tiles.nodeat(pos))
+
+	def _clear_tiles(self):
+		while self.tiles:
+			self.tiles.popleft()
+
 
 if __name__ == '__main__':
 	# Make a game instance, and run the game.
