@@ -54,7 +54,7 @@ class Tiles:
 
 			self.tiles = tiles
 
-	def _order_tiles(self):
+	def order_tiles(self):
 			line_count=0
 			column_count=0
 
@@ -70,7 +70,7 @@ class Tiles:
 					line_count=line_count+1
 					column_count=0
 
-	def _add_tile(self, pos):
+	def add_tile(self, pos):
 		self.tiles.insert({
 			"position":pos+1,
 			"players_on_tile":[],
@@ -78,14 +78,14 @@ class Tiles:
 			"cordinates":[],
 		},self.tiles.nodeat(pos))
 
-	def _delete_tile(self,pos):
+	def delete_tile(self,pos):
 		self.tiles.remove(self.tiles.nodeat(int(pos)))
 
-	def _clear_tiles(self):
+	def clear_tiles(self):
 		while self.tiles:
 			self.tiles.pop()
 
-	def _add_snakes_and_ladders(self, pos1, pos2, rand=False):
+	def add_snakes_and_ladders(self, pos1, pos2, rand=False):
 		if rand==False:
 			self.tiles[pos1+1]['on_step_move_to'] = self.tiles[pos2+1]['position']
 		else:
