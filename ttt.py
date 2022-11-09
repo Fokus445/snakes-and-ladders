@@ -74,15 +74,24 @@ class Tiles:
 
     def order_positions(self):
         for i, tile in enumerate(self.tiles):
+
             tile['position'] = i+1
 
     def add_tile(self, pos):
-        self.tiles.insert({
-            "position":f"{pos+1} *",
-            "players_on_tile":[],
-            "on_step_move_to":0,
-            "cordinates":[],
-        },self.tiles.nodeat(pos))
+        if self.tiles:
+            self.tiles.insert({
+                "position":f"{pos+1} *",
+                "players_on_tile":[],
+                "on_step_move_to":0,
+                "cordinates":[],
+            },self.tiles.nodeat(pos))
+        else:
+            self.tiles.appendright({
+                "position":f"{pos+1} *",
+                "players_on_tile":[],
+                "on_step_move_to":0,
+                "cordinates":[],
+            })
 
     def delete_tile(self,pos):
         self.tiles.remove(self.tiles.nodeat(int(pos)))
@@ -119,7 +128,7 @@ class SnakesAndLadders:
             self.settings.screen_height))
         self.font = pygame.font.SysFont('Arial', 15)
 
-        self.number_of_players = int(input("Enter number of players: "))
+        self.number_of_players = 0
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
@@ -154,6 +163,7 @@ class SnakesAndLadders:
 
     def _game_setting(self):
         while True:
+            self.screen.fill((255,255,255))
             self._check_events()
             self._draw_tiles()
             pygame.display.flip()
@@ -163,9 +173,9 @@ class SnakesAndLadders:
             print("1. ADD NEW TILE ")
             print("2. DELETE TILE AT POSTION X ")
             print("3. DELETE ALL TILES ")
-            print("4. ADD SNAKE OR LADDER")
-            print("5. Order positions")
-            print("6. START THE GAME")
+            print("4. Order positions")
+            print("5. Continue")
+
 
 
             choice = input("ENTER CHOICE: ")
@@ -178,22 +188,39 @@ class SnakesAndLadders:
             elif choice == '2':
                 pos = int(input("Where to DELETE tile (position): "))
                 self.tileClass.delete_tile(pos-1)
+                self.tileClass.order_tiles()
                 self._draw_tiles()
                 continue
             elif choice == '3':
                 self.tileClass.clear_tiles()
                 continue
+
             elif choice == '4':
-                pos1 = int(input("Where to add snakes or ladder (pos): "))
-                pos2 = int(input("To where (pos): "))
-                self.tileClass.add_snakes_and_ladders(pos1,pos2)
-                continue
-            elif choice == '5':
                 self.tileClass.order_positions()
                 continue
-            elif choice == '6':
-                break
+            elif choice == '5':
+                pass
 
+            while True:
+                self.screen.fill((255,255,255))
+                self._check_events()
+                self._draw_tiles()
+                pygame.display.flip()
+
+                print("-----------SNAKES AND LADDERS SETTINGS------------")
+                print("1. Add snakes and ladders ")
+                print("2. START THE GAME")
+                choice = input("ENTER CHOICE: ")
+
+
+                if choice == '1':
+                    pos1 = int(input("Where to add snakes or ladder (pos): "))
+                    pos2 = int(input("To where (pos): "))
+                    self.tileClass.add_snakes_and_ladders(pos1,pos2)
+                    continue
+                elif choice == '2':
+                    break
+            break
 
 
 
@@ -205,6 +232,7 @@ class SnakesAndLadders:
             
             if self.game_active == False:
                 self._game_setting()
+                self.number_of_players = int(input("Enter number of players: "))
                 self.game_active = True
 
 
@@ -328,6 +356,7 @@ class SnakesAndLadders:
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
                 self._check_dice_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
@@ -339,9 +368,10 @@ class SnakesAndLadders:
         self.screen.blit(self.dices[self.number_rolled-1], (750, 50))
 
     def _check_dice_button(self, mouse_pos):
-        button_clicked = self.dice_button.rect.collidepoint(mouse_pos)
-        if button_clicked:
-            self._roll_the_dice()
+        if self.game_active:
+            button_clicked = self.dice_button.rect.collidepoint(mouse_pos)
+            if button_clicked:
+                self._roll_the_dice()
 
     def _roll_the_dice(self):
         self.rolling_dice = True
