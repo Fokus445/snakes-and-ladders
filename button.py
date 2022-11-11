@@ -2,7 +2,7 @@ import pygame.font
 
 class Button:
 
-	def __init__(self, sal_game, msg, dice=False):
+	def __init__(self, sal_game, msg, x=0,y=0, color='green'):
 		"""Initialize button attributes."""
 		self.screen = sal_game.screen
 		self.screen_rect = self.screen.get_rect()
@@ -10,16 +10,16 @@ class Button:
 		# Set the dimensions and properties of the button.
 		self.width, self.height = 200, 50
 		self.button_color = (0, 255, 0)
+		if color=="red":
+			self.button_color = (170, 0, 0)
 		self.text_color = (255, 255, 255)
-		self.font = pygame.font.SysFont(None, 48)
+		self.font = pygame.font.SysFont(None, 36)
 
-		# Build the button's rect object and center it
-		if dice:
-			self.rect = pygame.Rect(700, 300, self.width, self.height)
-		else:
-			self.rect = pygame.Rect(0, 0, self.width, self.height)
+		# Build the button's rect
 
-		if dice==False:
+		self.rect = pygame.Rect(x, y, self.width, self.height)
+
+		if x==0 and y==0:
 			self.rect.center = self.screen_rect.center
 
 		# The button message needs to be prepped only once
@@ -37,14 +37,3 @@ class Button:
 		# Draw blank button and then draw message.
 		self.screen.fill(self.button_color, self.rect)
 		self.screen.blit(self.msg_image, self.msg_image_rect)
-
-
-	def _check_play_button(self, mouse_pos):
-		"""Start a new game when the player clicks Play."""
-		if dice:
-			if self.dice_button.rect.collidepoint(mouse_pos):
-				self.stats.game_active = True
-		else:
-
-			if self.play_button.rect.collidepoint(mouse_pos):
-				self.stats.game_active = True
