@@ -12,14 +12,16 @@ Credits
 
 ## Introduction
 
+![Screenshot](img/game.png)
+
 This Snake and Ladders game is designed to provide a fun and interactive gaming experience for players. It incorporates the classic rules of the game, where players take turns rolling a dice and moving their tokens across the board. The game includes features such as customizable board layouts and support for multiple players.
 Features
 
-    Classic Snake and Ladders gameplay.
-    Customizable board layout using a double linked list data structure.
-    Support for multiple players with dynamic token movement.
-    Interactive GUI implemented using the Pygame library.
-    Easy-to-understand menu system for game settings and customization.
+Classic Snake and Ladders gameplay.
+Customizable board layout using a double linked list data structure.
+Support for multiple players with dynamic token movement.
+Interactive GUI implemented using the Pygame library.
+Easy-to-understand menu system for game settings and customization.
 
 ## Installation
 
