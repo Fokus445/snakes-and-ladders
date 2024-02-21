@@ -12,7 +12,7 @@ Credits
 
 ## Introduction
 
-![Screenshot](img/game.png)
+![Screenshot](img/play.png)
 
 This Snake and Ladders game is designed to provide a fun and interactive gaming experience for players. It incorporates the classic rules of the game, where players take turns rolling a dice and moving their tokens across the board. The game includes features such as customizable board layouts and support for multiple players.
 Features
