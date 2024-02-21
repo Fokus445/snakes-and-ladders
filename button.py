@@ -1,5 +1,6 @@
 import pygame.font
 
+
 class Button:
 
 	def __init__(self, sal_game, msg, x=0,y=0, color='green'):
@@ -16,7 +17,6 @@ class Button:
 		self.font = pygame.font.SysFont(None, 36)
 
 		# Build the button's rect
-
 		self.rect = pygame.Rect(x, y, self.width, self.height)
 
 		if x==0 and y==0:

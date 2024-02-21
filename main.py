@@ -1,12 +1,16 @@
-
-
-from pyllist import dllist
-import csv
-import pygame
-import sys
 import random
-import time
+import sys
+
+import pygame
+
 from button import Button
+from tiles import Tiles
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
 
 class Settings:
     """A class to store all settings for Snakes and Ladders"""
@@ -17,104 +21,10 @@ class Settings:
         self.screen_height = 800
         self.bg_color = (133,133,133)
 
-
         #Dice settings
         self.dice_rolling_time = 3
 
         self.start_cordinates = [500,0]
-
-
-class Tiles:
-    """A class to manage tiles"""
-    def __init__(self):
-        self.tiles = dllist()
-        self._csv_to_tiles()
-        self.order_tiles()
-
-
-    def _csv_to_tiles(self):
-        with open("struktura.csv") as file:
-            csv_reader = csv.reader(file, delimiter=",")
-            line_count = 0
-            column_count = 0
-
-            tiles = dllist()
-            for row in csv_reader:
-                if line_count % 2:
-                    row = reversed(row)
-                for i in row:
-                    tiles.appendleft({
-                        "position":int(i),
-                        "players_on_tile":[],
-                        "on_step_move_to":0,
-                        "cordinates":[],
-                    })
-                    column_count=column_count+1
-
-                if column_count==10:
-                    line_count=line_count+1
-                    column_count=0
-
-            self.tiles = tiles
-
-    def order_tiles(self):
-            line_count=0
-            column_count=0
-
-            for tile in reversed(self.tiles):
-                if line_count % 2 == 0:
-                    tile['cordinates'] = [40+column_count*45,40+line_count*45]
-                    column_count=column_count+1
-                else:
-                    tile['cordinates'] = [40+(9-column_count)*45,40+line_count*45]
-                    column_count=column_count+1
-
-                if column_count==10:
-                    line_count=line_count+1
-                    column_count=0
-
-    def order_positions(self):
-        for i, tile in enumerate(self.tiles):
-
-            tile['position'] = i+1
-
-    def add_tile(self, pos):
-        if self.tiles:
-            self.tiles.insert({
-                "position":f"{pos+1} *",
-                "players_on_tile":[],
-                "on_step_move_to":0,
-                "cordinates":[],
-            },self.tiles.nodeat(pos))
-        else:
-            self.tiles.appendright({
-                "position":f"{pos+1} *",
-                "players_on_tile":[],
-                "on_step_move_to":0,
-                "cordinates":[],
-            })
-
-    def delete_tile(self,pos):
-        self.tiles.remove(self.tiles.nodeat(int(pos)))
-
-    def clear_tiles(self):
-        while self.tiles:
-            self.tiles.pop()
-
-    def add_snakes_and_ladders(self, pos1, pos2, rand=False):
-        if rand==False:
-            self.tiles[pos1-1]['on_step_move_to'] = self.tiles[pos2-1]['position']
-        else:
-            for i in range(1,int(len(self.tiles)/6)):
-                self.tiles[random.randint(3,len(self.tiles)-5)]['on_step_move_to'] = random.randint(3,len(self.tiles)-2)
-
-
-
-BLACK = ( 0, 0, 0)
-WHITE = ( 255, 255, 255)
-GREEN = ( 0, 255, 0)
-RED = ( 255, 0, 0)
-
 
 
 class SnakesAndLadders:
@@ -149,12 +59,12 @@ class SnakesAndLadders:
         self.game_active = False
         self.game_won = False
 
-        dice1 = pygame.image.load("dice1.png")
-        dice2 = pygame.image.load("dice2.png")
-        dice3 = pygame.image.load("dice3.png")
-        dice4 = pygame.image.load("dice4.png")
-        dice5 = pygame.image.load("dice5.png")
-        dice6 = pygame.image.load("dice6.png")
+        dice1 = pygame.image.load("img/dice1.png")
+        dice2 = pygame.image.load("img/dice2.png")
+        dice3 = pygame.image.load("img/dice3.png")
+        dice4 = pygame.image.load("img/dice4.png")
+        dice5 = pygame.image.load("img/dice5.png")
+        dice6 = pygame.image.load("img/dice6.png")
         self.dices = [dice1,dice2,dice3,dice4,dice5,dice6]
 
     # MENU
@@ -175,7 +85,6 @@ class SnakesAndLadders:
             print("6. QUIT")
 
 
-
             choice = input("ENTER CHOICE: ")
             if choice == '1':
                 pos = int(input("Where to insert tile (position): "))
@@ -192,7 +101,6 @@ class SnakesAndLadders:
             elif choice == '3':
                 self.tileClass.clear_tiles()
                 continue
-
             elif choice == '4':
                 self.tileClass.order_positions()
                 continue
@@ -240,43 +148,24 @@ class SnakesAndLadders:
         """Start the main loop for the game"""
         while True:
             self._check_events()
-
             self.screen.fill((255, 255, 255))
-            
-
+        
             if self.game_active == False:
                 self._game_setting()
-
-
-            if self.game_active:
-
+            else:
                 self.screen.fill((255, 255, 255))
-
                 if self.game_won==False:
-
                     if self.player_turn == 1:
                         pygame.draw.circle(self.screen, RED , (800,230),50)
                     if self.player_turn == 2:
                         pygame.draw.circle(self.screen, GREEN, (800,230), 50)
                     if self.player_turn == 3:
                         pygame.draw.circle(self.screen, BLACK , (800,230), 50)
-
                     self.dice_button.draw_button()
-
                     self._update_dice()
-
-
                 self.restart_button.draw_button()
-
-
                 self._draw_tiles()
-
-
-
                 self._update_players()
-
-
-
             pygame.display.flip()
 
 
