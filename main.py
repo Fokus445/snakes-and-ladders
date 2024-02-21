@@ -59,12 +59,12 @@ class SnakesAndLadders:
         self.game_active = False
         self.game_won = False
 
-        dice1 = pygame.image.load("img/dice1.png")
-        dice2 = pygame.image.load("img/dice2.png")
-        dice3 = pygame.image.load("img/dice3.png")
-        dice4 = pygame.image.load("img/dice4.png")
-        dice5 = pygame.image.load("img/dice5.png")
-        dice6 = pygame.image.load("img/dice6.png")
+        dice1 = pygame.image.load("dice/dice1.png")
+        dice2 = pygame.image.load("dice/dice2.png")
+        dice3 = pygame.image.load("dice/dice3.png")
+        dice4 = pygame.image.load("dice/dice4.png")
+        dice5 = pygame.image.load("dice/dice5.png")
+        dice6 = pygame.image.load("dice/dice6.png")
         self.dices = [dice1,dice2,dice3,dice4,dice5,dice6]
 
     # MENU

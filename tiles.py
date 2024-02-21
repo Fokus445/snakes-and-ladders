@@ -54,7 +54,6 @@ class Tiles:
 
     def order_positions(self):
         for i, tile in enumerate(self.tiles):
-
             tile['position'] = i+1
 
     def add_tile(self, pos):
