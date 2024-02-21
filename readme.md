@@ -48,7 +48,7 @@ Adjust the number of players participating in the game.
 
 ## Credits
 
-This Snake and Ladders game project was created as my Algorithms and Data Structure university module assigment. It utilizes the Pygame library for graphics and user interface.
+This Snake and Ladders game project was created as my Algorithms and Data Structures university module assigment. It utilizes the Pygame library for graphics and user interface.
 
 Feel free to contribute to this project by submitting bug fixes, feature enhancements, or feedback through issues and pull requests.
 
