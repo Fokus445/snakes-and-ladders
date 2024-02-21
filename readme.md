@@ -3,12 +3,12 @@
 Welcome to the Snake and Ladders game! This project is implemented in Python using the Pygame library. It simulates the classic board game of Snake and Ladders, where players roll a dice and move their tokens according to the number they get on the dice.
 Table of Contents
 
-    Introduction
-    Features
-    Installation
-    How to Play
-    Customization
-    Credits
+Introduction
+Features
+Installation
+How to Play
+Customization
+Credits
 
 ## Introduction
 
@@ -23,7 +23,7 @@ Features
 
 ## Installation
 
-pip install pygame
+    pip install pygame
 
 Run the game:
 
@@ -31,22 +31,22 @@ Run the game:
 
 ## How to Play
 
-    Upon running the game, you will be presented with a menu where you can customize the game settings and board layout.
-    Use the menu options to add or remove tiles, add snakes and ladders, and order positions according to your preference.
-    Once you're satisfied with the settings, start the game from the menu.
-    Roll the dice by clicking the "Roll the Dice" button.
-    Move your token according to the number rolled on the dice.
-    The game will automatically switch turns between players.
-    Continue rolling the dice and moving your token until one player reaches the end of the board and wins the game.
+Upon running the game, you will be presented with a menu where you can customize the game settings and board layout.
+Use the menu options to add or remove tiles, add snakes and ladders, and order positions according to your preference.
+Once you're satisfied with the settings, start the game from the menu.
+Roll the dice by clicking the "Roll the Dice" button.
+Move your token according to the number rolled on the dice.
+The game will automatically switch turns between players.
+Continue rolling the dice and moving your token until one player reaches the end of the board and wins the game.
 
 ## Customization
 
 You can customize various aspects of the game, including the board layout and the number of players. Here are some customization options available:
 
-    Add or remove tiles at specific positions on the board.
-    Add snakes and ladders to create shortcuts or obstacles for the players.
-    Order positions to arrange the tiles in a specific sequence.
-    Adjust the number of players participating in the game.
+Add or remove tiles at specific positions on the board.
+Add snakes and ladders to create shortcuts or obstacles for the players.
+Order positions to arrange the tiles in a specific sequence.
+Adjust the number of players participating in the game.
 
 ## Credits
 
