@@ -2,19 +2,7 @@
 
 Welcome to the Snake and Ladders game! This project is implemented in Python using the Pygame library. It simulates the classic board game of Snake and Ladders, where players roll a dice and move their tokens according to the number they get on the dice.
 
-## Introduction
-
 ![Screenshot](img/play.png)
-
-This Snake and Ladders game is designed to provide a fun and interactive gaming experience for players. It incorporates the classic rules of the game, where players take turns rolling a dice and moving their tokens across the board. The game includes features such as customizable board layouts and support for multiple players.
-
-Features
-
-Classic Snake and Ladders gameplay.
-Customizable board layout using a double linked list data structure.
-Support for multiple players with dynamic token movement.
-Interactive GUI implemented using the Pygame library.
-Easy-to-understand menu system for game settings and customization.
 
 ## Installation
 
@@ -33,8 +21,8 @@ Use the menu options to add or remove tiles, add snakes and ladders, and order p
 
 Once you're satisfied with the settings, start the game from the menu.
 Roll the dice by clicking the "Roll the Dice" button.
-Move your colored token according to the number rolled on the dice.
-The game will automatically switch turns between players.
+Your color token automatically moves according to the number rolled on the dice.
+The game will switch turns between players, whose turn colored circle will show under the dice.
 Continue rolling the dice and moving your colored token until one player reaches the end of the board and wins the game.
 
 ## Customization
