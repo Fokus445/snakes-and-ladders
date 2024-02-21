@@ -2,6 +2,18 @@
 
 Welcome to the Snake and Ladders game! This project is implemented in Python using the Pygame library. It simulates the classic board game of Snake and Ladders, where players roll a dice and move their tokens according to the number they get on the dice.
 
+The game utilizes a double linked list data structure to represent the game board. Each node in the list corresponds to a tile on the game board. These tiles store various attributes:
+
+1. Position: An integer value indicating the position of the tile on the game board.
+
+2. Players_on_tile: A list that stores references to the players currently occupying the tile. This allows for tracking which players are present on each tile.
+
+3. On_step_move_to: An integer value indicating if the tile has a special feature like a snake or a ladder. If a player lands on a tile with a snake or a ladder, they are moved to the position specified by this value.
+
+4. Coordinates: A list containing coordinates or other data necessary for displaying the tile on the game board UI.
+
+By using a double linked list, the game can efficiently navigate between tiles in both forward and backward directions. This data structure allows for easy traversal of the game board and facilitates the implementation of game logic such as player movement, checking for special tile features like snakes and ladders, and updating the positions of players accordingly. Additionally, the inclusion of player lists on each tile enables the game to manage player positioning and interactions effectively.
+
 ![Screenshot](img/play.png)
 
 ## Installation
