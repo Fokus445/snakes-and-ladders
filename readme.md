@@ -27,7 +27,7 @@ Run the game:
 
 Upon running the game, you will be presented with a menu where you can customize the game settings and board layout.
 Use the menu options to add or remove tiles, add snakes and ladders, and order positions according to your preference.
-![Screenshot](img/setup.png)
+![Screenshot](img/settings.png)
 
 Once you're satisfied with the settings, start the game from the menu.
 Roll the dice by clicking the "Roll the Dice" button.
